@@ -1,4 +1,4 @@
-Microservice
+iDA Usecases for Microservice Workshop
 ============
 
 Language and Framework
@@ -33,6 +33,9 @@ A sample csv file *cc_info.csv* is attached for testing.
 
 Lab One
 ===========================
+To change the orginal codes and deploy them into cloud foundry.
+
+
 address_to_postal
 ------------------
 - create requirements.txt and add the below packages into requirements.txt
@@ -67,9 +70,10 @@ postal_to_latlon
 - edit webapp_library.py replace the codes "app.run(port=port_number, debug = web_debug)" with "app.run(port=port_number, host='0.0.0.0',debug = web_debug)". Pass in the host value (0.0.0.0) otherwise it will use 127.0.0.1 by default, it does not work in PCF env.
 
 - eidt webapp_address_portal.py and do the below changes, add "import os" and "port = int(os.getenv("VCAP_APP_PORT"))", replace "build_app(MD, postal_to_latlon, 1020, True, '_merged.csv')" with "build_app(MD, postal_to_latlon, port, True, '_merged.csv')"
-
+codes as below:
+	
 	import postal_to_latlon
-	import os
+    import os
 
 	from webapp_library import build_app
 	if __name__ == '__main__':
@@ -95,6 +99,9 @@ region_appender
 - edit webapp_library.py replace the codes "app.run(port=port_number, debug = web_debug)" with "app.run(port=port_number, host='0.0.0.0',debug = web_debug)". Pass in the host value (0.0.0.0) otherwise it will use 127.0.0.1 by default, it does not work in PCF env.
 
 - eidt webapp_region_appender.py and do the below changes, add "import os" and "port = int(os.getenv("VCAP_APP_PORT"))", replace "build_app(MD, postal_to_latlon, 1020, True, '_merged.csv')" with "build_app(MD, postal_to_latlon, port, True, '_merged.csv')"
+
+codes as below:
+
 	import region_csv_appender
 	import os
 
@@ -109,13 +116,18 @@ region_appender
 COORDINATOR
 -------------
 - create requirements.txt and add the below packages into requirements.txt
+	
 		Flask
+		requests
 		https://pypi.python.org/packages/source/W/Werkzeug/Werkzeug-0.10.4.tar.gz
 		https://pypi.python.org/packages/source/F/Flask-Uploads/Flask-Uploads-0.1.3.tar.gz
 		https://pypi.python.org/packages/source/S/Shapely/Shapely-1.5.8.tar.gz
 		https://pypi.python.org/packages/source/p/pandas/pandas-0.15.2.tar.gz
 		
 - eidt web_coordinator.py and do the below changes. add "import os" and "port = int(os.getenv("VCAP_APP_PORT"))", replace "app.run(host='0.0.0.0', port=2000, debug = True)" with "app.run(host='0.0.0.0', port=port, debug = True)"
+
+   codes as below:
+   
 		if __name__ == "__main__":
 		    # app.run(host='0.0.0.0', port=2000, debug = True)
 		    port = int(os.getenv("VCAP_APP_PORT"))
@@ -123,4 +135,15 @@ COORDINATOR
 			
 - cf command to deploy uploads_coordinator : cf push uploads_coordinator -b https://github.com/cloudfoundry/python-buildpack -m 512MB -c "python web_coordinator.py"
 
+What problems did we solved?
+----------------------------
 
+
+Lab Two
+===========================
+To create address_to_postal, postal_to_latlon and region_appender as user provided service and get COORDINATOR to bind to them
+
+
+
+What problems did we solved?
+----------------------------
