@@ -53,7 +53,7 @@ address_to_postal
 		    build_app(MD, address_to_postal, port, True, '_postcode.csv')
 			# build_app(MD, address_to_postal, 1010, True, '_postcode.csv')
 
-- cf command to deploy address_to_postal : cf push address_postal -b https://github.com/cloudfoundry/python-buildpack -m 1GB -c "python webapp_address_postal.py"
+- cf command to deploy address_to_postal : cf push address_postal -b https://github.com/cloudfoundry/python-buildpack -m 512MB -c "python webapp_address_postal.py"
 
 
 postal_to_latlon
@@ -77,7 +77,7 @@ postal_to_latlon
     	build_app(MD, postal_to_latlon, port, True, '_merged.csv')
 		# build_app(MD, postal_to_latlon, 1020, True, '_merged.csv')
 		
-- cf command to deploy postal_to_latlon : cf push postal_to_latlon -b https://github.com/cloudfoundry/python-buildpack -m 1GB -c "python webapp_postal_latlon.py"
+- cf command to deploy postal_to_latlon : cf push postal_to_latlon -b https://github.com/cloudfoundry/python-buildpack -m 512MB -c "python webapp_postal_latlon.py"
 
 region_appender
 ---------------
@@ -104,7 +104,7 @@ region_appender
     	build_app(MD, region_csv_appender, port, True, '_enriched.csv')
 		#build_app(MD, region_csv_appender, 1030, True, '_enriched.csv')
 		
-- cf command to deploy region_appender : cf push region_appender -b https://github.com/ddollar/heroku-buildpack-multi -m 1GB -c "python webapp_region_appender.py"
+- cf command to deploy region_appender : cf push region_appender -b https://github.com/ddollar/heroku-buildpack-multi -m 512MB -c "python webapp_region_appender.py"
 
 COORDINATOR
 -------------
@@ -121,6 +121,6 @@ COORDINATOR
 		    port = int(os.getenv("VCAP_APP_PORT"))
 		    app.run(host='0.0.0.0', port=port, debug = True)
 			
-- cf command to deploy uploads_coordinator : cf push uploads_coordinator -b https://github.com/cloudfoundry/python-buildpack -m 1GB -c "python web_coordinator.py"
+- cf command to deploy uploads_coordinator : cf push uploads_coordinator -b https://github.com/cloudfoundry/python-buildpack -m 512MB -c "python web_coordinator.py"
 
 
