@@ -59,7 +59,7 @@ address_to_postal
 			# build_app(MD, address_to_postal, 1010, True, '_postcode.csv')
 
 - cf command to deploy address_to_postal : 
-
+   
 	cf push address_postal -b https://github.com/cloudfoundry/python-buildpack -m 512MB -c "python webapp_address_postal.py"
 
 
@@ -88,7 +88,9 @@ codes as below:
     	build_app(MD, postal_to_latlon, port, True, '_merged.csv')
 		# build_app(MD, postal_to_latlon, 1020, True, '_merged.csv')
 		
-- cf command to deploy postal_to_latlon : cf push postal_to_latlon -b https://github.com/cloudfoundry/python-buildpack -m 512MB -c "python webapp_postal_latlon.py"
+- cf command to deploy postal_to_latlon : 
+ 
+	cf push postal_to_latlon -b https://github.com/cloudfoundry/python-buildpack -m 512MB -c "python webapp_postal_latlon.py"
 
 region_appender
 ---------------
@@ -98,7 +100,7 @@ region_appender
   https://github.com/cloudfoundry/python-buildpack
   
 - create Aptfile and add the below content into Aptfile
-
+ 
 	libgeos-dev
 	
 - create requirements.txt and add the below packages into requirements.txt
@@ -148,7 +150,7 @@ COORDINATOR
 		    app.run(host='0.0.0.0', port=port, debug = True)
 			
 - cf command to deploy uploads_coordinator : 
-	
+ 
 	cf push uploads_coordinator -b https://github.com/cloudfoundry/python-buildpack -m 512MB -c "python web_coordinator.py"
 
 What problems did we solved?
