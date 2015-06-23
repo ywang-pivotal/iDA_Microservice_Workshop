@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Web Coordinator</title>
+	<link rel="shortcut icon" href="#">
+</head>
+<body>
+	<h1>Web Coordinator</h1>
+	<p><strong>List of available functions:</strong></p>
+	<ul id="func_list">
+	</ul>
+	{% if allowed %}
+    <p><strong>The allowed file extensions are as followed:</strong></p>
+    <ul>
+        {% for ext in allowed %}
+            <li>{{ ext }}</li>
+        {% endfor %}
+    </ul>
+	{% endif %}
+	<h3>Upload your file to continue</h3>
+	<form action="" method=post enctype=multipart/form-data>
+		<input type=file name=file>
+		<input type=submit value="Upload">
+	</form>
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+	<script>
+		var metadata = {{data|safe}};
+		for (func in metadata){
+			var new_bullet = $("<li>" + metadata[func].name + "</li>");
+			$("ul#func_list").append(new_bullet);
+		}
+	</script>
+</body>

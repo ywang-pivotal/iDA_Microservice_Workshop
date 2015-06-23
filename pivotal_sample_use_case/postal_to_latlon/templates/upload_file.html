@@ -1,0 +1,109 @@
+<!doctype html>
+<title>{{ data['name'] }}</title>
+<h1>{{ data['name'] }}</h1>
+<h2>
+    {{ data['description'] }}
+    <br/>
+    Upload the file to proceed.
+</h2>
+{% if allowed %}
+    <p><strong>The allowed file extensions are as followed:</strong></p>
+    <ul>
+        {% for ext in allowed %}
+            <li>{{ ext }}</li>
+        {% endfor %}
+    </ul>
+{% endif %}
+
+<form action="" method=post enctype=multipart/form-data>
+    {% if type == 'upload' %}
+        <p>
+            <input type=file name=file>
+            <br/><br/>
+            <input type=submit value=Upload>
+        </p>
+    
+    {% elif type == 'process' %}
+        {% for param in data['parameter'] %}
+            {% if param['source'] == 'search_column' %}
+                <p><strong>{{ param['description'] }} : </strong>
+                    <select name='{{ param['name'] }}'>
+                        {% for colname in columns %}
+                            <option value='{{ colname }}'>{{ colname }}</option>
+                        {% endfor %}
+                    </select>
+                </p>
+
+            {% elif param['source'] == 'user_input' %}
+                <p><strong>{{ param['description'] }} : </strong>
+                    {% if param['default'] %}
+                        Set to &quot{{ param['default'] }}&quot by default
+                        <input type=text name='{{ param['name'] }}' value='{{ param['default'] }}'>
+                    {% else %}
+                        <input type=text name='{{ param['name'] }}'>
+                    {% endif %}
+                </p>
+
+            {% elif param['source'] == 'from_options' %}
+                <p><strong>{{ param['description'] }} : </strong>
+                    {% if param['type'] == 'integer' %}
+                        <select name='{{ param['name'] }}'>
+                            {% for i in range(int(param['range'][0]), int(param['range'][1])) %}
+                                <option value='{{ i }}'>{{ i }}</option>
+                            {% endfor %}
+                        </select>
+                    {% elif param['type'] == 'string' %}
+                        <select name='{{ param['name'] }}'>
+                            {% for option in param['range'] %}
+                                <option value='{{ option }}'>{{ option }}</option>
+                            {% endfor %}
+                        </select>
+                    {% endif %}
+                </p>
+            {% endif %}
+        {% endfor %}
+        <input type=submit value='Start processing'>
+
+    {% elif type == 'auto' %}
+        <p><input type=file name=file></p>
+        {% for param in data['parameter'] %}
+            {% if param['source'] == 'search_column' %}
+                <p><strong>{{ param['description'] }} : </strong>
+                    <select name='{{ param['name'] }}'>
+                        {% for colname in columns %}
+                            <option value='{{ colname }}'>{{ colname }}</option>
+                        {% endfor %}
+                    </select> 
+                </p>
+
+            {% elif param['source'] == 'user_input' %}
+                <p><strong>{{ param['description'] }} : </strong>
+                    {% if param['default'] %}
+                        Set to &quot{{ param['default'] }}&quot by default
+                        <input type=text name='{{ param['name'] }}' value='{{ param['default'] }}'>
+                    {% else %}
+                        <input type=text name='{{ param['name'] }}'>
+                    {% endif %}
+                </p>
+                
+            {% elif param['source'] == 'from_options' %}
+                <p><strong>{{ param['description'] }} : </strong>
+                    {% if param['type'] == 'integer' %}
+                        <select name='{{ param['name'] }}'>
+                            {% for i in range(int(param['range'][0]), int(param['range'][1])) %}
+                                <option value='{{ i }}'>{{ i }}</option>
+                            {% endfor %}
+                        </select>
+                    {% elif param['type'] == 'string' %}
+                        <select name='{{ param['name'] }}'>
+                            {% for option in param['range'] %}
+                                <option value='{{ option }}'>{{ option }}</option>
+                            {% endfor %}
+                        </select>
+                    {% endif %}
+                </p>
+            {% endif %}
+        {% endfor %}
+        <input type=submit value=Upload>
+    {% endif %}
+</form>

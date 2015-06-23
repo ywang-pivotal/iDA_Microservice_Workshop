@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style type="text/css">
+        body, html {
+            font-family:sans-serif; 
+            color:#330033; 
+            text-align:center;
+        }
+        .wrapper {
+            text-align: center;
+        }
+        .wrapper ul {
+            display: inline-block;
+            margin: 0;
+            padding: 0;
+            width: 50%;
+        }
+        .wrapper li {
+            list-style-type:none;
+            width: auto;
+            padding: 2px 5px;
+            margin: 2px;
+            background-color:#CCCCFF;
+            border:2px double #CCCCCC;
+        }
+    </style>
+    <link rel="shortcut icon" href="#">
+</head>
+<body>
+    <h1>Web Coordinator</h1>
+    <h3>The first 5 rows of your uploaded csv file</h3>
+    <div style="overflow:auto;height:400px">
+        <table border=1 cellpadding=1 cellspacing=3 id="preview"></table>
+    </div>
+    <div class="svrc_list" style="width:40%; float:left">
+        <p class='reload'>
+            <button id="reload_page">Reset</button>
+        </p>
+    </div>
+    <div style="text-align: center">
+        <form action="" method=post enctype=multipart/form-data>
+            <div class='wrapper'>
+                <ul id="func_list">
+                    <p style="text-align: left">The sequence of selected functions:</p>
+                </ul>
+            </div>
+            <br/>
+            <div style="clear:both">
+                <button id="pass_object">Confirm</button><br><br>
+                <input type=submit value="Start data processing" id=startprocess style="visibility: hidden">
+            </div>
+        </form>
+    </div>
+    <span id="result" style="display: none">Function and arguments list</span>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+    <script type="text/javascript">
+        //To create the add and remove function button
+        var metadata = {{data|safe}};
+        for (func in metadata){
+            var new_svrc = $("<p>"+ metadata[func].name +
+                " <button class='add_service'>Add function</button>\
+                <button class='remove_service'>Remove function</button><p>");
+            $('p.reload').before(new_svrc);
+        }
+    </script>
+    <script type="text/javascript">
+        var $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
+        
+        var count = 0; // number of functions added in total
+        var func_num = {}; // number of function added for each function
+        var track_func = []; // to keep track of the name of the input to send to server
+        var new_col = {}; // to keep track of the new columns added by function
+        var metadata = {{ data|safe }}; // the metadata obtained from server side
+
+        function add_function(svrc){
+            count += 1; //total number of functions added
+            if (!func_num.hasOwnProperty(svrc.name)) {
+                 func_num[svrc.name] = 0;
+            }
+            func_num[svrc.name] += 1;
+            var svrc_cnt = func_num[svrc.name]; // number of this particular service
+            var svrc_id = svrc.name + svrc_cnt;
+            var newfield = "<li id='"+ svrc_id +"' pos="+count+">\
+                            <strong>Function: "+svrc.name+"</strong><br>";
+            var params = svrc.parameter;
+            var para_names = [];
+            for (param in params){
+                newfield += params[param].description + ": ";
+                var para_name = params[param].name + count;
+                para_names.push(para_name);
+                var para_src = params[param].source;
+                if (para_src == "search_column"){
+                    newfield += "<select name=" + para_name + ">\
+                                {% for colname in columns %} \
+                                <option value='{{colname}}'>'{{colname}}'\
+                                </option>{% endfor %}";
+                    if (new_col){
+                        for (newcol in new_col){
+                            if (newcol < count){
+                                newfield += "<option value='"+new_col[newcol]+"'\
+                                            id=col"+newcol+">'"+
+                                            new_col[newcol]+"'</option>";
+                            }
+                        }
+                    }
+                    newfield += "</select><br>";
+                }else if (para_src == 'user_input'){
+                    if (params[param].default){
+                        var para_default = params[param].default;
+                        newfield += "<button type=button id="+para_name+">Set to &quot"+
+                                    para_default+ "&quot by default. Click to change</button>\
+                                    <input type=text name=" + para_name + 
+                                    " value='"+para_default+"' style='display:none'\
+                                    id="+para_name+"><br>";
+                        $('ul').on('click', 'button#'+para_name, function(){
+                            $('input#'+para_name).css('display', 'inline');
+                        })
+                    }else {
+                        newfield += "<input type=text name=" + para_name + "><br>";
+                    } // track the new columns added
+                    if (params[param].new_column){
+                        var mark = count;
+                        if (params[param].default){
+                            new_col[mark] = params[param].default;
+                        }else{
+                            new_col[mark] = "";
+                        }
+                        $('ul').on('change', 'input#'+para_name, function(){
+                            new_col[mark] = $('input#'+para_name).val();
+                            $('option#col'+mark).val(new_col[mark]);
+                            $('option#col'+mark).html("'"+ new_col[mark] + "'");
+                        })
+                    }
+                }else if (para_src == 'from_options'){
+                    newfield += "<select name="+para_name+">";
+                    if (params[param].type == 'integer'){
+                        for (i=params[param].range[0]; i <= params[param].range[1];i++){
+                            newfield += "<option value='"+ i + "'>"+i+"</option>";
+                        }
+                    }else if (params[param].type == 'string'){
+                        for (index in params[param].range){
+                            elem = params[param].range[index];
+                            newfield += "<option value='"+ elem +"'>"+elem+"</option>";
+                        }
+                    }
+                    newfield += "</select><br>";
+                }
+            }
+            newfield += "</li>";
+            $('ul#func_list').append(newfield);
+            var svrc_name = svrc.name;
+            var func_argv = {};
+            func_argv[svrc_name] = para_names;
+            track_func.push(JSON.stringify(func_argv));
+            $('#startprocess').css("visibility", "hidden");
+        }
+
+        function remove_function(svrc){
+            if (!func_num.hasOwnProperty(svrc.name)) {
+                 func_num[svrc.name] = 0;
+            }
+            var svrc_id = svrc.name + func_num[svrc.name];
+            var this_svrc = $("li[id='" + svrc_id + "']");
+            var svrc_pos = this_svrc.attr("pos");
+            this_svrc.remove();
+            $("option#col"+svrc_pos).remove();
+            delete new_col[svrc_pos];
+            if (func_num[svrc.name] > 0){func_num[svrc.name] -= 1;}
+            var len = track_func.length;
+            for (i=len-1; i >= 0; i--){
+                if (Object.keys(JSON.parse(track_func[i]))[0] == svrc.name){
+                    track_func.splice(i, 1);
+                    break;
+                }
+            }
+            $('#startprocess').css("visibility", "hidden");
+        }
+        
+        $(function() {
+            var submit_form = function() {
+                $.getJSON($SCRIPT_ROOT + '/_processes', {
+                  track_func_list: JSON.stringify(track_func)
+                }, function(data) {
+                  $('#result').text(data.result);
+                  $('#startprocess').css("visibility", "inherit")
+                });
+                return false;
+            };
+            $('#pass_object').bind('click', submit_form);
+            $('button.add_service').each(function(index){
+                $(this).bind('click', function(){
+                    add_function(metadata[index]);
+                });
+            });
+            $('button.remove_service').each(function(index){
+                $(this).bind('click', function(){
+                    remove_function(metadata[index]);
+                });
+            });
+        });
+
+        $('#reload_page').click(function(){
+            location.reload(true)
+        })
+    </script>
+    <script>
+        var table_data = {{ head_rows|safe }};
+        var tbl = "";
+        var header = "";
+        for (m=0; m<table_data[0].length;m++){
+            header += "<th>" + table_data[0][m] + "</th>"
+        }
+        tbl += "<tr>" + header + "</tr>";
+        for (i = 1; i<table_data.length; i++){
+            var row = "";
+            for (j = 0; j<table_data[i].length; j++){
+                row += "<td>" + table_data[i][j] + "</td>";
+            }
+            tbl += "<tr>" + row + "</tr>";
+        }
+        $("table#preview").html(tbl);
+    </script>
+</body>
+</html>

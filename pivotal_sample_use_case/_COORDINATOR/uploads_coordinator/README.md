@@ -1,0 +1,1 @@
+Folder that store files that are uploaded to the web coordinator

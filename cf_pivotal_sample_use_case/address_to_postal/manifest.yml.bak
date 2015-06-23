@@ -1,0 +1,7 @@
+---
+applications:
+- name: address_postal
+  memory: 1GB
+  buildpack: https://github.com/cloudfoundry/python-buildpack
+  timeout: 180
+  command: python webapp_address_postal.py
