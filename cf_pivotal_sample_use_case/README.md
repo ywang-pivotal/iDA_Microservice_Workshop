@@ -70,6 +70,7 @@ postal_to_latlon
 - edit webapp_library.py replace the codes "app.run(port=port_number, debug = web_debug)" with "app.run(port=port_number, host='0.0.0.0',debug = web_debug)". Pass in the host value (0.0.0.0) otherwise it will use 127.0.0.1 by default, it does not work in PCF env.
 
 - eidt webapp_address_portal.py and do the below changes, add "import os" and "port = int(os.getenv("VCAP_APP_PORT"))", replace "build_app(MD, postal_to_latlon, 1020, True, '_merged.csv')" with "build_app(MD, postal_to_latlon, port, True, '_merged.csv')"
+
 codes as below:
 	
 	import postal_to_latlon
@@ -142,6 +143,7 @@ What problems did we solved?
 Lab Two
 ===========================
 To create address_to_postal, postal_to_latlon and region_appender as user provided service and get COORDINATOR to bind to them
+
 
 
 
