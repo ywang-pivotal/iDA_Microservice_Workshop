@@ -1,4 +1,4 @@
-# iDA_Microservice_Workshop
+# iDA Microservice Workshop
 
 Objectives
 =============
