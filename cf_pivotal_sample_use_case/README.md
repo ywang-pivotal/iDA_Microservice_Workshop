@@ -174,7 +174,6 @@ COORDINATOR
 - edit web_coordinator.py
 	codes need to change :
 	
-	## Changes for Lab Two
 	services_env = os.getenv("VCAP_SERVICES")
 	vcap_services = json.loads(services_env)
 	services_address_postal_url = vcap_services['user-provided'][0]['credentials']['uri']
