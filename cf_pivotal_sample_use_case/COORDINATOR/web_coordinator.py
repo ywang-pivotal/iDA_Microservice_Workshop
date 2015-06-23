@@ -66,17 +66,6 @@ funcMD_list = [{
 	}]
 },]
 
-# url_data = {
-#     "Address to Postal Code": "http://127.0.0.1:1010",
-#     "Postcode to LatLon": "http://127.0.0.1:1020",
-#     "Region Appender": "http://127.0.0.1:1030"
-# }
-
-url_data = {
-	"Address to Postal Code": "http://address-postal.cfapps.io/",
-	"Postcode to LatLon": "http://postal-to-latlon.cfapps.io/",
-	"Region Appender": "http://region-appender.cfapps.io/"
-}
 
 import os
 import json
@@ -87,6 +76,31 @@ import csv
 import urllib
 import requests
 from api_library import build_api
+
+# Original 
+# url_data = {
+#     "Address to Postal Code": "http://127.0.0.1:1010",
+#     "Postcode to LatLon": "http://127.0.0.1:1020",
+#     "Region Appender": "http://127.0.0.1:1030"
+# }
+
+## Changes for Lab One
+# url_data = {
+#     "Address to Postal Code": "http://address-postal.cfapps.io/",
+#     "Postcode to LatLon": "http://postal-to-latlon.cfapps.io/",
+#     "Region Appender": "http://region-appender.cfapps.io/"
+# }
+
+## Changes for Lab Two
+services_env = os.getenv("VCAP_SERVICES")
+services_address_postal = json.loads(services_env)
+services_address_postal_url = services_address_postal['user-provided'][0]['credentials']['uri']
+print services_address_postal_url
+url_data = {
+	"Address to Postal Code": services_address_postal_url,
+	"Postcode to LatLon": "http://postal-to-latlon.cfapps.io/",
+	"Region Appender": "http://region-appender.cfapps.io/"
+}
 
 app = Flask(__name__)
 FUNCTION_LIST = None

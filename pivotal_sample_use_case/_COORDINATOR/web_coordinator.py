@@ -66,11 +66,13 @@ funcMD_list = [{
 	}]
 },]
 
-url_data = {
-	"Address to Postal Code": "http://127.0.0.1:1010",
-	"Postcode to LatLon": "http://127.0.0.1:1020",
-	"Region Appender": "http://127.0.0.1:1030"
-}
+# url_data = {
+#     "Address to Postal Code": "http://127.0.0.1:1010",
+#     "Postcode to LatLon": "http://127.0.0.1:1020",
+#     "Region Appender": "http://127.0.0.1:1030"
+# }
+
+
 
 import os
 import json
@@ -81,6 +83,62 @@ import csv
 import urllib
 import requests
 from api_library import build_api
+
+# services_env = os.getenv("VCAP_SERVICES")
+services_env = """{
+  "staging_env_json": {},
+  "running_env_json": {},
+  "system_env_json": {
+    "VCAP_SERVICES": {
+      "user-provided": [
+        {
+          "name": "address_postal-service",
+          "label": "user-provided",
+          "tags": [],
+          "credentials": {
+            "uri": "http://address-postal.cfapps.io/"
+          },
+          "syslog_drain_url": ""
+        }
+      ]
+    }
+  },
+  "application_env_json": {
+    "VCAP_APPLICATION": {
+      "limits": {
+        "mem": 512,
+        "disk": 1024,
+        "fds": 16384
+      },
+      "application_version": "0f8325a1-38b2-4f7b-99d2-d8693e043920",
+      "application_name": "uploads_coordinator",
+      "application_uris": [
+        "uploads-coordinator.cfapps.io"
+      ],
+      "version": "0f8325a1-38b2-4f7b-99d2-d8693e043920",
+      "name": "uploads_coordinator",
+      "space_name": "development",
+      "space_id": "83cc477c-138a-4376-9bce-a97aacab8222",
+      "uris": [
+        "uploads-coordinator.cfapps.io"
+      ],
+      "users": null
+    }
+  }
+}"""
+
+services_address_postal = json.loads(services_env)
+
+print services_address_postal['system_env_json']['VCAP_SERVICES']['user-provided'][0]['credentials']['uri']
+
+services_address_postal_url = services_address_postal
+
+
+url_data = {
+	"Address to Postal Code": "http://address-postal.cfapps.io/",
+	"Postcode to LatLon": "http://postal-to-latlon.cfapps.io/",
+	"Region Appender": "http://region-appender.cfapps.io/"
+}
 
 app = Flask(__name__)
 FUNCTION_LIST = None
