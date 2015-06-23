@@ -163,10 +163,27 @@ To create address_to_postal, postal_to_latlon and region_appender as user provid
 
 User Provided Services
 ---------------------------
+	
+	cf cups address-postal-service -p '{"uri":"http://address-postal.cfapps.io/"}'
+	cf cups postal-to-latlon-service -p '{"uri":"http://postal-to-latlon.cfapps.io/"}'
+	cf cups region-appender-service -p '{"uri":"http://region-appender.cfapps.io/"}'
 
 
 COORDINATOR
 ---------------------------
+- edit web_coordinator.py
+	codes need to change :
+	
+	## Changes for Lab Two
+	services_env = os.getenv("VCAP_SERVICES")
+	vcap_services = json.loads(services_env)
+	services_address_postal_url = vcap_services['user-provided'][0]['credentials']['uri']
+	print services_address_postal_url
+	url_data = {
+		"Address to Postal Code": services_address_postal_url,
+		"Postcode to LatLon": "http://postal-to-latlon.cfapps.io/",
+		"Region Appender": "http://region-appender.cfapps.io/"
+	}
 
 
 What problems did we solved?

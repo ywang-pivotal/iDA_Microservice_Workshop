@@ -93,8 +93,8 @@ from api_library import build_api
 
 ## Changes for Lab Two
 services_env = os.getenv("VCAP_SERVICES")
-services_address_postal = json.loads(services_env)
-services_address_postal_url = services_address_postal['user-provided'][0]['credentials']['uri']
+vcap_services = json.loads(services_env)
+services_address_postal_url = vcap_services['user-provided'][0]['credentials']['uri']
 print services_address_postal_url
 url_data = {
 	"Address to Postal Code": services_address_postal_url,
