@@ -194,7 +194,9 @@ What problems did we solved?
 Lab Three (Demo)
 ============================
 To demostrate how to work with API management tool. The API management tool being used here is tyk <https://tyk.io>
-** Covert all the python codes to make it as REST API before using this tool**
+** Covert all the python codes to make it as REST API before using this tool
+To open an account at https://cloud.tyk.io/
+
 
 Create a Portal and your first API
 -----------------------------------
