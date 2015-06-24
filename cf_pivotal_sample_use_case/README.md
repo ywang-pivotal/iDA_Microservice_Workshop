@@ -160,6 +160,7 @@ What problems did we solved?
 Lab Two
 ===========================
 To create address_to_postal, postal_to_latlon and region_appender as user provided service and get COORDINATOR to bind to them
+Change the codes to take the actual URI from evn
 
 User Provided Services
 ---------------------------
@@ -188,3 +189,49 @@ COORDINATOR
 
 What problems did we solved?
 ----------------------------
+
+
+Lab Three (Demo)
+============================
+To demostrate how to work with API management tool. The API management tool being used here is tyk <https://tyk.io>
+** Covert all the python codes to make it as REST API before using this tool**
+
+Create a Portal and your first API
+-----------------------------------
+
+By default there is no portal configured, you need to configure it by visiting the portal settings screen, even if you don’t want to change the option. Simply click on “Settings”, the notification view on the right will say that no configuration was detected so it was created. Your portal won’t work without this step, so it’s important.
+
+That’s it, now you need to create the home page
+
+Create the home page
+Go to “Pages” and Add a new page, give it any title you like (e.g. “Welcome”) and then, at the bottom of the page, select “Make this page the home page”
+
+Save the page.
+
+Create an API
+Go to the “APIs” section, and select the green button to create a new API, Change the following fields:
+
+API Name: HttpBin
+Target: http://httpbin.org
+Advanced Options -> API Slug: test-api
+Save the API.
+
+Create a Policy
+Under the Policies menu item, select “New Policy”, you can leave all the defaults as is, except:
+
+Name the policy “Default”
+Select the “HttpBin” API in the access control section and click “Add” so it appears in the list
+Check the box that says “Make this policy active”
+Save the policy by clicking the “Create” button.
+
+Publish the API to the portal
+The API that you defined earlier is active and will work, however you don’t have a key yet, you could manually create one in the “Keys” section, but it’s bettter to use the portal flow to get your API key as a new developer.
+
+Not all APIs are visible to the portal, only the ones you tell it about, so under the “Catalogue” section, select “Add API”, on the screen that apears, then:
+
+Select your “HttpBin” API
+Select your “Default” policy
+Fill in the description fields
+Ensure the “Enable this APi” checkbox is checked
+Save the API Catalogue entry by clicking the “Update” button.
+
